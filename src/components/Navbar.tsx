@@ -6,6 +6,8 @@ const navLinks = [
   { href: "/promotions", label: "Promotions" },
   { href: "/vip", label: "VIP" },
   { href: "/support", label: "Support" },
+  { href: "/register", label: "Register" },
+  { href: "/login", label: "Login" },
 ];
 
 export default function Navbar() {

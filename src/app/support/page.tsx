@@ -41,17 +41,33 @@ export default function SupportPage() {
         body: JSON.stringify(form),
       });
 
-      const data = await response.json();
+      const rawText = await response.text();
+
+      let data: { error?: string; message?: string } = {};
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        setServerError(
+          `Server returned non-JSON response. Status: ${response.status}. Body: ${rawText}`
+        );
+        return;
+      }
 
       if (!response.ok) {
-        setServerError(data.error || "Something went wrong.");
+        setServerError(
+          data.error || `Request failed with status ${response.status}.`
+        );
         return;
       }
 
       setServerMessage(data.message || "Support request submitted.");
       setForm(initialFormState);
-    } catch {
-      setServerError("Unable to submit the form right now.");
+    } catch (error) {
+      setServerError(
+        error instanceof Error
+          ? `Unable to submit the form right now: ${error.message}`
+          : "Unable to submit the form right now."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -174,7 +190,7 @@ export default function SupportPage() {
               ) : null}
 
               {serverError ? (
-                <div className="rounded-2xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300">
+                <div className="rounded-2xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300 whitespace-pre-wrap">
                   {serverError}
                 </div>
               ) : null}

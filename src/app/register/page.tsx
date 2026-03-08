@@ -1,0 +1,142 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import SectionHeading from "@/components/SectionHeading";
+
+type RegisterForm = {
+  fullName: string;
+  email: string;
+  password: string;
+};
+
+const initialForm: RegisterForm = {
+  fullName: "",
+  email: "",
+  password: "",
+};
+
+export default function RegisterPage() {
+  const [form, setForm] = useState<RegisterForm>(initialForm);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverMessage, setServerMessage] = useState("");
+  const [serverError, setServerError] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setServerMessage("");
+    setServerError("");
+
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setServerError(data.error || "Registration failed.");
+        return;
+      }
+
+      setServerMessage(data.message || "Registration successful.");
+      setForm(initialForm);
+    } catch {
+      setServerError("Unable to register right now.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-[#030712] text-white">
+      <Navbar />
+      <section className="mx-auto max-w-4xl px-6 py-20">
+        <SectionHeading
+          eyebrow="Register"
+          title="Create your BamInSpire Casino player account"
+          description="This is the first real player-registration workflow backed by your local database."
+        />
+
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="fullName" className="mb-2 block text-sm font-semibold text-white/80">
+                Full Name
+              </label>
+              <input
+                id="fullName"
+                type="text"
+                value={form.fullName}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, fullName: event.target.value }))
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none focus:border-yellow-400/50"
+                placeholder="Enter your full name"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="mb-2 block text-sm font-semibold text-white/80">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={form.email}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, email: event.target.value }))
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none focus:border-yellow-400/50"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="mb-2 block text-sm font-semibold text-white/80">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={form.password}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, password: event.target.value }))
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none focus:border-yellow-400/50"
+                placeholder="Create a password"
+              />
+            </div>
+
+            {serverMessage ? (
+              <div className="rounded-2xl border border-green-400/30 bg-green-400/10 px-4 py-3 text-sm text-green-300">
+                {serverMessage}
+              </div>
+            ) : null}
+
+            {serverError ? (
+              <div className="rounded-2xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300">
+                {serverError}
+              </div>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="rounded-2xl bg-yellow-400 px-6 py-3 font-bold text-black transition hover:bg-yellow-300 disabled:opacity-70"
+            >
+              {isSubmitting ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
+        </div>
+      </section>
+      <Footer />
+    </main>
+  );
+}

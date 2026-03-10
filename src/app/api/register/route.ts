@@ -53,7 +53,6 @@ export async function POST(request: Request) {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-
     const player = await prisma.player.create({
       data: {
         fullName,
@@ -67,7 +66,6 @@ export async function POST(request: Request) {
         createdAt: true,
       },
     });
-
     return NextResponse.json({
       ok: true,
       message: "Player account created successfully.",

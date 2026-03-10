@@ -14,7 +14,34 @@ model Player {
   passwordHash String
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+
+  wallet       Wallet?
   sessions     Session[]
+}
+
+model Wallet {
+  id        Int      @id @default(autoincrement())
+  playerId  Int      @unique
+  balance   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  walletId  Int
+  type      String
+  amount    Int
+  balance   Int
+  createdAt DateTime @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
 }
 
 model Session {
@@ -28,5 +55,4 @@ model Session {
   player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
   @@index([playerId])
-  @@index([expiresAt])
 }

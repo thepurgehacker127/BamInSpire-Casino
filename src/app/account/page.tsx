@@ -7,16 +7,11 @@ import { getCurrentSession } from "@/lib/session";
 export default async function AccountPage() {
   const session = await getCurrentSession();
 
-  if (!session?.player) {
+  if (!session) {
     redirect("/login");
   }
 
   const player = session.player;
-
-  const createdAtLabel = (() => {
-    const date = new Date(player.createdAt);
-    return Number.isNaN(date.getTime()) ? "N/A" : date.toLocaleString();
-  })();
 
   return (
     <main className="min-h-screen bg-[#030712] text-white">
@@ -25,7 +20,7 @@ export default async function AccountPage() {
       <section className="mx-auto max-w-5xl px-6 py-20">
         <SectionHeading
           eyebrow="Account"
-          title={`Welcome back, ${player.fullName ?? "Player"}`}
+          title={`Welcome back, ${player.fullName}`}
           description="This is the first protected player page in BamInSpire Casino. Access requires a valid session cookie and a matching database session."
         />
 
@@ -38,11 +33,11 @@ export default async function AccountPage() {
             <div className="mt-6 space-y-4 text-white/80">
               <p>
                 <span className="font-semibold text-white">Full Name:</span>{" "}
-                {player.fullName ?? "N/A"}
+                {player.fullName}
               </p>
               <p>
                 <span className="font-semibold text-white">Email:</span>{" "}
-                {player.email ?? "N/A"}
+                {player.email}
               </p>
               <p>
                 <span className="font-semibold text-white">Player ID:</span>{" "}
@@ -50,7 +45,7 @@ export default async function AccountPage() {
               </p>
               <p>
                 <span className="font-semibold text-white">Account Created:</span>{" "}
-                {createdAtLabel}
+                {new Date(player.createdAt).toLocaleString()}
               </p>
             </div>
           </article>

@@ -1,27 +1,32 @@
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
 
 const gameCategories = [
   {
-    title: "Slots",
+    title: "Lucky Sevens Slots",
     description:
-      "Fast browsing area for featured reels, jackpot slots, and category-based discovery.",
+      "First playable wallet-connected slot prototype with server-side spin logic.",
+    href: "/slots",
   },
   {
     title: "Blackjack",
     description:
-      "Premium table-game zone layout for classic and variant blackjack experiences.",
+      "Premium table-game zone layout for future blackjack experiences.",
+    href: "#",
   },
   {
     title: "Roulette",
     description:
-      "Dedicated interface section for roulette categories, featured tables, and quick access.",
+      "Dedicated interface section for future roulette tables and quick access.",
+    href: "#",
   },
   {
     title: "Live Casino",
     description:
       "Future-ready section for hosted real-time gaming experiences and live-style presentation.",
+    href: "#",
   },
 ];
 
@@ -34,7 +39,7 @@ export default function GamesPage() {
         <SectionHeading
           eyebrow="Games"
           title="BamInSpire Casino game lobby foundation"
-          description="This page is the first structured version of the games area. Right now it is a premium placeholder page, but it is already organized like a real product area and ready for future categories, filters, providers, and game cards."
+          description="The platform now includes its first playable slot prototype. The rest of these categories remain structured placeholders for future expansion."
         />
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -49,6 +54,19 @@ export default function GamesPage() {
               <p className="mt-4 leading-7 text-white/70">
                 {category.description}
               </p>
+
+              {category.href !== "#" ? (
+                <Link
+                  href={category.href}
+                  className="mt-6 inline-block rounded-2xl bg-yellow-400 px-5 py-3 font-bold text-black transition hover:bg-yellow-300"
+                >
+                  Open Game
+                </Link>
+              ) : (
+                <div className="mt-6 inline-block rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-white/50">
+                  Coming later
+                </div>
+              )}
             </article>
           ))}
         </div>

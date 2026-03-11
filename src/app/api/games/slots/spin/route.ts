@@ -5,27 +5,43 @@ import { prisma } from "../../../../../lib/prisma";
 import { getCurrentSession } from "../../../../../lib/session";
 
 const ALLOWED_BETS = [10, 25, 50, 100] as const;
-const SYMBOLS = ["CHERRY", "LEMON", "BAR", "SEVEN", "DIAMOND"] as const;
 
-type SymbolName = (typeof SYMBOLS)[number];
+const REEL_SYMBOL_POOL = [
+  "BLANK",
+  "BLANK",
+  "BLANK",
+  "BLANK",
+  "BLANK",
+  "BLANK",
+  "CHERRY",
+  "CHERRY",
+  "LEMON",
+  "LEMON",
+  "BAR",
+  "BAR",
+  "SEVEN",
+  "DIAMOND",
+] as const;
 
-function getRandomSymbol(): SymbolName {
-  return SYMBOLS[randomInt(0, SYMBOLS.length)];
+type SymbolName = (typeof REEL_SYMBOL_POOL)[number];
+
+function getWeightedRandomSymbol(): SymbolName {
+  return REEL_SYMBOL_POOL[randomInt(0, REEL_SYMBOL_POOL.length)];
 }
 
 function calculatePayout(reels: SymbolName[], bet: number) {
   const [a, b, c] = reels;
 
   if (a === "SEVEN" && b === "SEVEN" && c === "SEVEN") {
-    return { payout: bet * 20, label: "Triple SEVEN" };
+    return { payout: bet * 30, label: "Triple SEVEN Jackpot" };
   }
 
   if (a === "DIAMOND" && b === "DIAMOND" && c === "DIAMOND") {
-    return { payout: bet * 12, label: "Triple DIAMOND" };
+    return { payout: bet * 22, label: "Triple DIAMOND" };
   }
 
   if (a === "BAR" && b === "BAR" && c === "BAR") {
-    return { payout: bet * 8, label: "Triple BAR" };
+    return { payout: bet * 12, label: "Triple BAR" };
   }
 
   if (a === "CHERRY" && b === "CHERRY" && c === "CHERRY") {
@@ -35,7 +51,7 @@ function calculatePayout(reels: SymbolName[], bet: number) {
   const cherryCount = reels.filter((symbol) => symbol === "CHERRY").length;
 
   if (cherryCount >= 2) {
-    return { payout: bet * 2, label: "Two CHERRY symbols" };
+    return { payout: bet * 2, label: "Double CHERRY" };
   }
 
   return { payout: 0, label: "No win" };
@@ -85,9 +101,9 @@ export async function POST(request: Request) {
         }
 
         const reels: SymbolName[] = [
-          getRandomSymbol(),
-          getRandomSymbol(),
-          getRandomSymbol(),
+          getWeightedRandomSymbol(),
+          getWeightedRandomSymbol(),
+          getWeightedRandomSymbol(),
         ];
 
         const { payout, label } = calculatePayout(reels, bet);
@@ -134,6 +150,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       game: "Lucky Sevens",
+      mode: "weighted-rng-v2",
       ...result,
     });
   } catch (error) {

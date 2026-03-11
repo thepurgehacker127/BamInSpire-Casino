@@ -15,6 +15,7 @@ type SpinResponse = {
   label?: string;
   balance?: number;
   net?: number;
+  mode?: string;
 };
 
 const BET_OPTIONS = [10, 25, 50, 100] as const;
@@ -90,8 +91,8 @@ export default function SlotsPage() {
       <section className="mx-auto max-w-6xl px-6 py-20">
         <SectionHeading
           eyebrow="Slots"
-          title="Lucky Sevens — first live game prototype"
-          description="This is the first wallet-connected game in BamInSpire Casino. Outcomes are generated on the server and every balance change is recorded in the ledger."
+          title="Lucky Sevens — weighted RNG prototype"
+          description="This slot engine uses weighted symbol distribution and server-side wallet updates."
         />
 
         <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
@@ -102,7 +103,7 @@ export default function SlotsPage() {
                   Lucky Sevens
                 </h3>
                 <p className="mt-2 text-white/70">
-                  Server-side slot spin prototype using wallet credits.
+                  Weighted symbol slot prototype using wallet credits.
                 </p>
               </div>
 
@@ -179,20 +180,21 @@ export default function SlotsPage() {
             <article className="rounded-3xl border border-white/10 bg-white/5 p-6">
               <h3 className="text-2xl font-bold">Paytable</h3>
               <ul className="mt-4 space-y-3 text-white/70">
-                <li>• SEVEN / SEVEN / SEVEN → 20x bet</li>
-                <li>• DIAMOND / DIAMOND / DIAMOND → 12x bet</li>
-                <li>• BAR / BAR / BAR → 8x bet</li>
+                <li>• SEVEN / SEVEN / SEVEN → 30x bet</li>
+                <li>• DIAMOND / DIAMOND / DIAMOND → 22x bet</li>
+                <li>• BAR / BAR / BAR → 12x bet</li>
                 <li>• CHERRY / CHERRY / CHERRY → 5x bet</li>
                 <li>• Any 2 CHERRY symbols → 2x bet</li>
+                <li>• BLANK symbols do not pay</li>
               </ul>
             </article>
 
             <article className="rounded-3xl border border-white/10 bg-white/5 p-6">
               <h3 className="text-2xl font-bold">Why This Matters</h3>
               <p className="mt-4 leading-7 text-white/70">
-                This is the first end-to-end game loop in the platform: wallet
-                debit, secure outcome generation, optional payout, and ledger
-                recording all happen server-side.
+                This upgraded slot engine uses a lower-hit weighted symbol model
+                with blank outcomes, which reduces win frequency and makes premium
+                symbol combinations feel more meaningful.
               </p>
             </article>
           </aside>

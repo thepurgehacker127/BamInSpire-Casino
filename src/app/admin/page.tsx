@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin";
 
 function formatMoney(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -15,6 +16,8 @@ function formatType(type: string) {
 }
 
 export default async function AdminPage() {
+  await requireAdmin();
+
   const [playerCount, wallets, recentPlayers, recentTransactions] =
     await Promise.all([
       prisma.player.count(),
@@ -141,9 +144,7 @@ export default async function AdminPage() {
                 <tbody>
                   {recentTransactions.map((tx) => (
                     <tr key={tx.id} className="border-t border-white/10">
-                      <td className="py-3">
-                        {tx.wallet.player.fullName}
-                      </td>
+                      <td className="py-3">{tx.wallet.player.fullName}</td>
                       <td className="py-3">{formatType(tx.type)}</td>
                       <td
                         className={`py-3 font-bold ${

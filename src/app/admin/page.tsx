@@ -106,6 +106,7 @@ export default async function AdminPage() {
                     <th className="pb-3">Name</th>
                     <th className="pb-3">Email</th>
                     <th className="pb-3">Balance</th>
+                    <th className="pb-3">Role</th>
                     <th className="pb-3">Created</th>
                   </tr>
                 </thead>
@@ -117,6 +118,7 @@ export default async function AdminPage() {
                       <td className="py-3">
                         {formatMoney(player.wallet?.balance ?? 0)}
                       </td>
+                      <td className="py-3 capitalize">{player.role}</td>
                       <td className="py-3 text-white/65">
                         {new Date(player.createdAt).toLocaleString()}
                       </td>
